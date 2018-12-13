@@ -18,6 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import com.google.common.collect.Lists;
 
 import sso.core.component.RequestHandleFilter;
+import sso.core.internal.rpc.RequestClient;
 import sso.core.service.AuthService;
 import sso.core.service.IdentityService;
 
@@ -76,6 +77,7 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 		registry.registerBeanDefinition("authService", getBeanDefinition(authService.getClass(), SCOPE_SINGLETON));
 		registry.registerBeanDefinition("identityService", getBeanDefinition(identityService.getClass(), SCOPE_SINGLETON));
 		registry.registerBeanDefinition("identityService", getFilterBeanDefinition(new RequestHandleFilter()).getRawBeanDefinition());
+		registry.registerBeanDefinition("requestClient", getBeanDefinition(RequestClient.class, SCOPE_SINGLETON));
 	}
 
 	private ClassLoader getThreadClassLoader() throws Exception {

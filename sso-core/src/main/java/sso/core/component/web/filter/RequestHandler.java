@@ -1,6 +1,7 @@
 package sso.core.component.web.filter;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sso.core.internal.dto.Constant;
+
 public class RequestHandler implements Filter {
 
 	private static final ThreadLocal<HttpServletRequest> REQUESTS = new ThreadLocal<HttpServletRequest>();
@@ -24,6 +27,17 @@ public class RequestHandler implements Filter {
 	@Override
 	public void destroy() {
 		LOG.info("RequestHandleFilter is destoryed!");
+		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				try {
+					getRequest().getRequestDispatcher(Constant.PAGE.PAGE_ERROR.getPath()).forward(getRequest(), getResponse());
+				} catch (ServletException | IOException e1) {
+					LOG.error("When catching error, occurred another exception!");
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
 
 	@Override

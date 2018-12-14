@@ -23,11 +23,11 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Override
-	public UserInfo login(String loginName, String saltedPassword) throws IOException {
+	public UserInfo login(String loginName, String password) throws IOException {
 		String authId = RequestHandler.getRequest().getParameter(Constant.KEY.AUTH_ID.getKey());
 		Map<String, String> dataMap = Maps.newHashMap();
 		dataMap.put("loginName", loginName);
-		dataMap.put("saltedPassword", saltedPassword);
+		dataMap.put("password", password);
 		Response response = requestClient.post(getAuthUrl(authId), dataMap, null);
 		if (response.isSuccessful()) {
 			byte[] bytes = response.body().bytes();

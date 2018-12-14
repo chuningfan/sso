@@ -84,6 +84,7 @@ public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result
 					} else {
 						accessRedisClient.set(accessKey, set);
 					}
+					result.setData(Constant.KEY.DIRECT_HEADER.getKey() + packet.getCallback());
 				}
 			}
 			return result;

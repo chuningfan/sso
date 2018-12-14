@@ -1,4 +1,4 @@
-package sso.service.controller;
+package sso.core.internal.dto;
 
 import java.util.concurrent.TimeUnit;
 

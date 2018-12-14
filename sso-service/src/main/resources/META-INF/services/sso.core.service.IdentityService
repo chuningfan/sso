@@ -1,1 +1,2 @@
-sso.service.auth.service.IdentityServiceImpl
+sso.service.auth.service.SessionService
+sso.service.auth.service.TokenService

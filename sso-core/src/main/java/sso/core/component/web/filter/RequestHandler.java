@@ -1,4 +1,4 @@
-package sso.core.component.web;
+package sso.core.component.web.filter;
 
 import java.io.IOException;
 
@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestHandleFilter implements Filter {
+public class RequestHandler implements Filter {
 
 	private static final ThreadLocal<HttpServletRequest> REQUESTS = new ThreadLocal<HttpServletRequest>();
 	private static final ThreadLocal<HttpServletResponse> RESPONSES = new ThreadLocal<HttpServletResponse>();
 	
-	private static final Logger LOG = LoggerFactory.getLogger(RequestHandleFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RequestHandler.class);
 	
 	@Override
 	public void destroy() {

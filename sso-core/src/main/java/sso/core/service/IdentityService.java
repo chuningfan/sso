@@ -1,10 +1,18 @@
 package sso.core.service;
 
-public interface IdentityService<T> {
+import java.util.concurrent.TimeUnit;
+
+public interface IdentityService<K, V> {
 	
-	T get(String key);
+	V get(K key);
 	
-	T saveOrUpdate(String key, T value);
+	V save(K key, V value);
 	
-	boolean remove(String key);
+	V save(K key, V value, long timeout, TimeUnit timeUnit);
+	
+	V set(K key, V value);
+	
+	V set(K key, V value, long timeout, TimeUnit timeUnit);
+	
+	boolean remove(K key);
 }

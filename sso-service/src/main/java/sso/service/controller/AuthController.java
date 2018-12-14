@@ -1,5 +1,5 @@
 package sso.service.controller;
 
-public class PageController {
+public class AuthController {
 
 }

@@ -18,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import com.google.common.collect.Lists;
 
 import sso.core.component.rpc.RequestClient;
-import sso.core.component.web.RequestHandleFilter;
+import sso.core.component.web.filter.RequestHandler;
 import sso.core.service.AuthService;
 import sso.core.service.IdentityService;
 
@@ -55,7 +55,7 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 		while (idenItr.hasNext()) {
 			identityService = idenItr.next();
 			if (identityService != null) {
-				break;
+				registry.registerBeanDefinition(identityService.getClass().getName(), getBeanDefinition(identityService.getClass(), SCOPE_SINGLETON));
 			}
 		}
 		if (Objects.isNull(authService)) {
@@ -66,18 +66,10 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 				Thread.currentThread().interrupt();
 			}
 		}
-		if (Objects.isNull(identityService)) {
-			try {
-				throw new Exception("Must provide an implementation for [" + IdentityService.class.getName() + "] by SPI");
-			} catch (Exception e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-		}
 		registry.registerBeanDefinition("authService", getBeanDefinition(authService.getClass(), SCOPE_SINGLETON));
-		registry.registerBeanDefinition("identityService", getBeanDefinition(identityService.getClass(), SCOPE_SINGLETON));
-		registry.registerBeanDefinition("identityService", getFilterBeanDefinition(new RequestHandleFilter()).getRawBeanDefinition());
+		registry.registerBeanDefinition("requestHandler", getFilterBeanDefinition(new RequestHandler()).getRawBeanDefinition());
 		registry.registerBeanDefinition("requestClient", getBeanDefinition(RequestClient.class, SCOPE_SINGLETON));
+		
 	}
 
 	private ClassLoader getThreadClassLoader() throws Exception {

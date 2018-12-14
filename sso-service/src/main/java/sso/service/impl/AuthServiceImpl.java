@@ -11,8 +11,8 @@ import com.google.common.collect.Maps;
 import okhttp3.Response;
 import sso.core.component.rpc.RequestClient;
 import sso.core.component.web.filter.RequestHandler;
+import sso.core.internal.dto.Constant;
 import sso.core.service.AuthService;
-import sso.service.controller.Constant;
 import user.service.dto.UserInfo;
 
 public class AuthServiceImpl implements AuthService<String, UserInfo> {

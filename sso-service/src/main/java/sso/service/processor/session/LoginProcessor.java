@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
 import sso.core.internal.dto.StateCode;
@@ -14,7 +15,6 @@ import sso.core.internal.handler.ChainHandler;
 import sso.core.internal.processor.AbstractProcessor;
 import sso.service.cache.session.EhClient;
 import sso.service.cache.session.RedisClient;
-import sso.service.controller.Constant;
 import sso.service.impl.AuthServiceImpl;
 import user.service.dto.UserInfo;
 

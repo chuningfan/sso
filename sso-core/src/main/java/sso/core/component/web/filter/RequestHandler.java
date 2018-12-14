@@ -27,17 +27,6 @@ public class RequestHandler implements Filter {
 	@Override
 	public void destroy() {
 		LOG.info("RequestHandleFilter is destoryed!");
-		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				try {
-					getRequest().getRequestDispatcher(Constant.PAGE.PAGE_ERROR.getPath()).forward(getRequest(), getResponse());
-				} catch (ServletException | IOException e1) {
-					LOG.error("When catching error, occurred another exception!");
-					e1.printStackTrace();
-				}
-			}
-		});
 	}
 
 	@Override
@@ -45,6 +34,17 @@ public class RequestHandler implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
+		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				try {
+					req.getRequestDispatcher(Constant.PAGE.PAGE_ERROR.getPath()).forward(req, resp);
+				} catch (ServletException | IOException e1) {
+					LOG.error("When catching error, occurred another exception!");
+					e1.printStackTrace();
+				}
+			}
+		});
 		REQUESTS.set(req);
 		RESPONSES.set(resp);
 		chain.doFilter(req, resp);

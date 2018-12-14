@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
 import sso.core.internal.dto.StateCode;
@@ -19,7 +20,6 @@ import sso.core.internal.processor.AbstractProcessor;
 import sso.service.cache.AccessRedisClient;
 import sso.service.cache.session.EhClient;
 import sso.service.cache.session.RedisClient;
-import sso.service.controller.Constant;
 
 public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result<String>> {
 

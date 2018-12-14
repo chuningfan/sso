@@ -1,6 +1,6 @@
 package sso.common.dto;
 
-public class LoginForm extends RegistrationForm {
+public class LoginForm extends Form {
 	
 	private boolean rememberMe;
 

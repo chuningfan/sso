@@ -1,6 +1,6 @@
 package sso.common.dto;
 
-public class UpdatePasswordForm extends LoginForm {
+public class UpdatePasswordForm extends Form {
 	
 	private String oldPassword;
 

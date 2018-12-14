@@ -1,4 +1,4 @@
-package sso.core.internal;
+package sso.core.annotation;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 
 import sso.core.component.rpc.RequestClient;
 import sso.core.component.web.filter.RequestHandler;
+import sso.core.internal.processor.AbstractProcessor;
 import sso.core.service.AuthService;
 import sso.core.service.IdentityService;
 
@@ -31,6 +32,8 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+		@SuppressWarnings("unchecked")
+		Class<? extends AbstractProcessor> processorClass = (Class<? extends AbstractProcessor>) metadata.getAnnotationAttributes("sso.core.annotation.EnableSSO").get("processorClass");
 		ClassLoader externalClassLoader = null;
 		try {
 			externalClassLoader = getThreadClassLoader();
@@ -39,7 +42,6 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 			LOG.info("cannot find external class loader, try to get current class loader to load services");
 			externalClassLoader = SSOImporter.class.getClassLoader();
 		}
-		
 		ServiceLoader<AuthService> authServiceLoader = ServiceLoader.load(AuthService.class, externalClassLoader);
 		Iterator<AuthService> authItr = authServiceLoader.iterator();
 		ServiceLoader<IdentityService> identityServiceLoader = ServiceLoader.load(IdentityService.class, externalClassLoader);
@@ -69,6 +71,7 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 		registry.registerBeanDefinition("authService", getBeanDefinition(authService.getClass(), SCOPE_SINGLETON));
 		registry.registerBeanDefinition("requestHandler", getFilterBeanDefinition(new RequestHandler()).getRawBeanDefinition());
 		registry.registerBeanDefinition("requestClient", getBeanDefinition(RequestClient.class, SCOPE_SINGLETON));
+		registry.registerBeanDefinition("authProcessor", getBeanDefinition(processorClass, SCOPE_SINGLETON));
 		
 	}
 

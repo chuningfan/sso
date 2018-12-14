@@ -1,4 +1,4 @@
-package sso.service.impl;
+package sso.service.cache.session;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import sso.core.service.IdentityService;
 
-public class SessionRedisService implements IdentityService<String, HttpSession> {
+public class EhClient implements IdentityService<String, HttpSession> {
 
 	@Override
 	public HttpSession get(String key) {

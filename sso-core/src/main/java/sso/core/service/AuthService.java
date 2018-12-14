@@ -2,10 +2,12 @@ package sso.core.service;
 
 import java.io.IOException;
 
-public interface AuthService<T> {
+public interface AuthService<K, V> {
 	
-	T login(String loginName, String saltedPassword) throws IOException;
+	V login(String loginName, String saltedPassword) throws IOException;
 	
-	boolean logout(T data) throws IOException;
+	boolean logout(K key) throws IOException;
+	
+	String getAuthUrl(String authId);
 	
 }

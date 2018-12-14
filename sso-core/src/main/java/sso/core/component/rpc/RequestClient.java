@@ -69,12 +69,12 @@ public class RequestClient {
 			oos.writeObject(obj);
 			oos.flush();
 			byte[] content = baos.toByteArray();
-			return RequestBody.create(MediaType.get(org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE), content);
+			return RequestBody.create(MediaType.parse(org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE), content);
 		}
 	}
 	
 	public static final OkHttpClient getClientWithConfig() {
-		return new OkHttpClient().newBuilder().callTimeout(3000, TimeUnit.MILLISECONDS)
+		return new OkHttpClient().newBuilder()
 				.readTimeout(3000, TimeUnit.MILLISECONDS)
 				.writeTimeout(3000, TimeUnit.MILLISECONDS)
 				.build();

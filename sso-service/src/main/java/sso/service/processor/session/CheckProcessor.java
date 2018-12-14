@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sso.common.dto.SSOKey;
 import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
@@ -54,7 +55,7 @@ public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result
 	private class SessionChecker extends AbstractAuthHandler<String, SSORequest, Result<String>> {
 		@Override
 		public Result<String> process0(SSORequest packet, Result<String> result) throws IOException {
-			String authId = packet.getRequest().getParameter(Constant.KEY.AUTH_ID.getKey());
+			String authId = packet.getRequest().getParameter(SSOKey.KEY.AUTH_ID.getKey());
 			HttpSession session = packet.getRequest().getSession(false);
 			if (session != null && session.getId().equalsIgnoreCase(packet.getSessionId())) {
 				LOG.info("Valid session: from server.");

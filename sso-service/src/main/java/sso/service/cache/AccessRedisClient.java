@@ -3,6 +3,8 @@ package sso.service.cache;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import sso.core.service.IdentityService;
@@ -10,40 +12,44 @@ import sso.core.service.IdentityService;
 @Component
 public class AccessRedisClient implements IdentityService<String, Set<String>> {
 
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Set<String> get(String key) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Set<String>) redisTemplate.opsForSet().pop(key);
 	}
 
 	@Override
 	public Set<String> save(String key, Set<String> value) {
-		// TODO Auto-generated method stub
-		return null;
+		redisTemplate.opsForSet().add(key, value);
+		return value;
 	}
 
 	@Override
 	public Set<String> save(String key, Set<String> value, long timeout, TimeUnit timeUnit) {
-		// TODO Auto-generated method stub
-		return null;
+		save(key, value);
+		redisTemplate.expire(key, timeout, timeUnit);
+		return value;
 	}
 
 	@Override
 	public Set<String> set(String key, Set<String> value) {
-		// TODO Auto-generated method stub
-		return null;
+		save(key, value);
+		return value;
 	}
 
 	@Override
 	public Set<String> set(String key, Set<String> value, long timeout, TimeUnit timeUnit) {
-		// TODO Auto-generated method stub
-		return null;
+		save(key, value, timeout, timeUnit);
+		return value;
 	}
 
 	@Override
 	public boolean remove(String key) {
-		// TODO Auto-generated method stub
-		return false;
+		redisTemplate.delete(key);
+		return true;
 	}
 
 	

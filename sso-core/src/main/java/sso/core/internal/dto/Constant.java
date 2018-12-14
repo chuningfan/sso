@@ -50,7 +50,7 @@ public interface Constant {
 	
 	enum KEY {
 		
-		CALLBACK_URL("callback"), AUTH_ID("authId"), DIRECT_HEADER("direct:");
+		DIRECT_HEADER("direct:");
 		
 		private String key;
 

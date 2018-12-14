@@ -17,7 +17,9 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import com.google.common.collect.Lists;
 
+import sso.core.component.cache.RedisCacheConfig;
 import sso.core.component.rpc.RequestClient;
+import sso.core.component.session.RedisSessionConfig;
 import sso.core.component.web.filter.RequestHandler;
 import sso.core.internal.processor.AbstractProcessor;
 import sso.core.service.AuthService;
@@ -74,7 +76,8 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 		for(Class<? extends AbstractProcessor> clazz: processorClasses) {
 			registry.registerBeanDefinition(clazz.getName(), getBeanDefinition(clazz, SCOPE_SINGLETON));
 		}
-		
+		registry.registerBeanDefinition("redisSessionConfig", getBeanDefinition(RedisSessionConfig.class, SCOPE_SINGLETON));
+		registry.registerBeanDefinition("redisCacheConfig", getBeanDefinition(RedisCacheConfig.class, SCOPE_SINGLETON));
 	}
 
 	private ClassLoader getThreadClassLoader() throws Exception {

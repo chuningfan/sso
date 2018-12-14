@@ -9,11 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 
 import okhttp3.Response;
+import sso.common.dto.SSOKey;
+import sso.common.dto.UserInfo;
 import sso.core.component.rpc.RequestClient;
 import sso.core.component.web.filter.RequestHandler;
-import sso.core.internal.dto.Constant;
 import sso.core.service.AuthService;
-import user.service.dto.UserInfo;
 
 public class AuthServiceImpl implements AuthService<String, UserInfo> {
 
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 	
 	@Override
 	public UserInfo login(String loginName, String password) throws IOException {
-		String authId = RequestHandler.getRequest().getParameter(Constant.KEY.AUTH_ID.getKey());
+		String authId = RequestHandler.getRequest().getParameter(SSOKey.KEY.AUTH_ID.getKey());
 		Map<String, String> dataMap = Maps.newHashMap();
 		dataMap.put("loginName", loginName);
 		dataMap.put("password", password);

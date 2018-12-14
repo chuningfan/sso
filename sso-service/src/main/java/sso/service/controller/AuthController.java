@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import sso.common.dto.UserInfo;
 import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
 import sso.service.processor.session.LoginProcessor;
-import user.service.dto.UserInfo;
 
 @RestController
 public class AuthController {

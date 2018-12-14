@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sso.common.dto.UserInfo;
 import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
@@ -16,7 +17,6 @@ import sso.core.internal.processor.AbstractProcessor;
 import sso.service.cache.session.EhClient;
 import sso.service.cache.session.RedisClient;
 import sso.service.impl.AuthServiceImpl;
-import user.service.dto.UserInfo;
 
 public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Result<UserInfo>> {
 

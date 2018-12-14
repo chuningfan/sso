@@ -1,4 +1,4 @@
-package sso.core.internal.rpc;
+package sso.core.component.rpc;
 
 import okhttp3.OkHttpClient;
 

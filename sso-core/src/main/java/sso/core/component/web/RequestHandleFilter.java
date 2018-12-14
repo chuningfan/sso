@@ -1,4 +1,4 @@
-package sso.core.component;
+package sso.core.component.web;
 
 import java.io.IOException;
 

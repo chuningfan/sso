@@ -1,4 +1,4 @@
-package sso.core.internal.rpc;
+package sso.core.component.rpc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

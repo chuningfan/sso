@@ -17,8 +17,8 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import com.google.common.collect.Lists;
 
-import sso.core.component.RequestHandleFilter;
-import sso.core.internal.rpc.RequestClient;
+import sso.core.component.rpc.RequestClient;
+import sso.core.component.web.RequestHandleFilter;
 import sso.core.service.AuthService;
 import sso.core.service.IdentityService;
 

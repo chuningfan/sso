@@ -8,12 +8,15 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
 
-import sso.core.internal.SSOImporter;
+import sso.core.internal.processor.AbstractProcessor;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(SSOImporter.class)
 public @interface EnableSSO {
+	
+	@SuppressWarnings("rawtypes")
+	Class< ? extends AbstractProcessor>[] processorClasses();
 	
 }

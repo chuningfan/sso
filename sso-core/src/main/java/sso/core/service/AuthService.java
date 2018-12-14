@@ -1,13 +1,13 @@
 package sso.core.service;
 
-public interface AuthService<T> {
+import java.io.IOException;
+
+public interface AuthService<K, V> {
 	
-	T login(String loginName, String saltedPassword);
+	V login(String loginName, String saltedPassword) throws IOException;
 	
-	boolean isLocked(String loginName);
+	boolean logout(K key) throws IOException;
 	
-	boolean updatePassword(String loginName, String saltedPassword, String saltedOldPassword);
-	
-	T register(String loginName, String saltedPassword);
+	String getAuthUrl(String authId);
 	
 }

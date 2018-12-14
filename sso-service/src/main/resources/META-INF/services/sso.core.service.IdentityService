@@ -1,1 +1,2 @@
-sso.service.auth.service.IdentityServiceImpl
+sso.service.cache.session.EhClient
+sso.service.cache.session.RedisClient

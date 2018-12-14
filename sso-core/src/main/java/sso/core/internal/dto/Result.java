@@ -14,36 +14,41 @@ public class Result<T> {
 		return code;
 	}
 
-	public void setCode(StateCode code) {
+	public Result<T> setCode(StateCode code) {
 		this.code = code;
+		return this;
 	}
 
 	public Exception getExc() {
 		return exc;
 	}
 
-	public void setExc(Exception exc) {
+	public Result<T> setExc(Exception exc) {
 		this.exc = exc;
+		return this;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public Result<T> setMessage(String message) {
 		this.message = message;
+		return this;
 	}
 
 	public T getData() {
 		return data;
 	}
 
-	public void setData(T data) {
+	public Result<T> setData(T data) {
 		this.data = data;
+		return this;
 	}
 
-	public void turnToFailure() {
+	public Result<T> turnToFailure() {
 		this.code = StateCode.FAILURE;
+		return this;
 	}
 	
 }

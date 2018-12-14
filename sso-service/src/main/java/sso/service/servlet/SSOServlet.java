@@ -23,7 +23,7 @@ import sso.service.controller.Constant;
 import sso.service.helper.SpringHelper;
 import sso.service.processor.session.CheckProcessor;
 
-@WebServlet(urlPatterns="/validate", name="sso-servlet")
+@WebServlet(urlPatterns="/validate.do", name="sso-servlet")
 public class SSOServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;

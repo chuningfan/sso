@@ -33,7 +33,7 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 	@SuppressWarnings("rawtypes")
 	public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
 		@SuppressWarnings("unchecked")
-		Class<? extends AbstractProcessor> processorClass = (Class<? extends AbstractProcessor>) metadata.getAnnotationAttributes("sso.core.annotation.EnableSSO").get("processorClass");
+		Class<? extends AbstractProcessor>[] processorClasses = (Class<? extends AbstractProcessor>[]) metadata.getAnnotationAttributes("sso.core.annotation.EnableSSO").get("processorClasses");
 		ClassLoader externalClassLoader = null;
 		try {
 			externalClassLoader = getThreadClassLoader();
@@ -71,7 +71,9 @@ public class SSOImporter implements ImportBeanDefinitionRegistrar {
 		registry.registerBeanDefinition("authService", getBeanDefinition(authService.getClass(), SCOPE_SINGLETON));
 		registry.registerBeanDefinition("requestHandler", getFilterBeanDefinition(new RequestHandler()).getRawBeanDefinition());
 		registry.registerBeanDefinition("requestClient", getBeanDefinition(RequestClient.class, SCOPE_SINGLETON));
-		registry.registerBeanDefinition("authProcessor", getBeanDefinition(processorClass, SCOPE_SINGLETON));
+		for(Class<? extends AbstractProcessor> clazz: processorClasses) {
+			registry.registerBeanDefinition(clazz.getName(), getBeanDefinition(clazz, SCOPE_SINGLETON));
+		}
 		
 	}
 

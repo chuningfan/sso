@@ -17,6 +17,6 @@ import sso.core.internal.processor.AbstractProcessor;
 public @interface EnableSSO {
 	
 	@SuppressWarnings("rawtypes")
-	Class< ? extends AbstractProcessor> processorClass();
+	Class< ? extends AbstractProcessor>[] processorClasses();
 	
 }

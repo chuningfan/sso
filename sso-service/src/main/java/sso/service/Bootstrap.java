@@ -6,11 +6,12 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import sso.core.annotation.EnableSSO;
 import sso.service.processor.session.CheckProcessor;
+import sso.service.processor.session.LoginProcessor;
 import sso.service.servlet.SSOServlet;
 
 @SpringBootApplication
 @ServletComponentScan(basePackageClasses={SSOServlet.class})
-@EnableSSO(processorClass=CheckProcessor.class)
+@EnableSSO(processorClasses={CheckProcessor.class, LoginProcessor.class})
 public class Bootstrap {
 
 	public static void main(String[] args) {

@@ -3,8 +3,11 @@ package sso.service.cache;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.stereotype.Component;
+
 import sso.core.service.IdentityService;
 
+@Component
 public class AccessRedisClient implements IdentityService<String, Set<String>> {
 
 	@Override

@@ -4,8 +4,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
+
 import sso.core.service.IdentityService;
 
+@Component
 public class EhClient implements IdentityService<String, HttpSession> {
 
 	@Override

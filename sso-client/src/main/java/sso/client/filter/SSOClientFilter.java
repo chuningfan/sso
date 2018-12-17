@@ -20,18 +20,28 @@ import sso.common.dto.SSOKey;
 
 public class SSOClientFilter implements Filter {
 
+	private static TokenService tokenService;
 
-	private TokenService tokenService;
-	
 	private String verifyURI;
-	
+
 	private String ssoURL;
-	
+
+	private String tokenServiceClass;
+
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		
+		verifyURI = config.getInitParameter("verifyURI");
+		ssoURL = config.getInitParameter("ssoURL");
+		tokenServiceClass = config.getInitParameter("tokenServiceClass");
+		if (tokenService == null)
+			try {
+				tokenService = (TokenService) Class.forName(tokenServiceClass).newInstance();
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
 	}
-	
+
 	@Override
 	public void destroy() {
 		
@@ -49,7 +59,8 @@ public class SSOClientFilter implements Filter {
 			Verifier.post(url, dataMap);
 		} else if (request.getMethod().equals("POST") && verifyURI.equals(request.getRequestURI())) {
 			// request from SSO service
-			if (request.getParameter(SSOKey.KEY.AUTH_ID.getKey()) != null && "true".equals(request.getParameter(SSOKey.KEY.CLIENT_VERIFY.getKey()))) {
+			if (request.getParameter(SSOKey.KEY.AUTH_ID.getKey()) != null
+					&& "true".equals(request.getParameter(SSOKey.KEY.CLIENT_VERIFY.getKey()))) {
 				tokenService.createToken(authId, request, response);
 			}
 		} else {
@@ -57,13 +68,11 @@ public class SSOClientFilter implements Filter {
 				chain.doFilter(request, response);
 			} else {
 				response.sendRedirect(ssoURL);
+				return;
 			}
 		}
 		chain.doFilter(request, response);
-	}
 
-	public void setTokenService(TokenService tokenService) {
-		this.tokenService = tokenService;
 	}
 
 }

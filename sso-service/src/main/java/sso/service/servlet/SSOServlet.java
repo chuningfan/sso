@@ -32,7 +32,7 @@ public class SSOServlet extends HttpServlet {
 	
 	private CheckProcessor checkProcessor;
 	
-	private RequestClient requestClient = SpringHelper.getComponent(RequestClient.class);
+	private static RequestClient requestClient;
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,6 +41,8 @@ public class SSOServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if (requestClient == null)
+			requestClient = SpringHelper.getComponent(RequestClient.class);
 		Result<String> result = new Result<String>();
 		String authId = req.getParameter(SSOKey.KEY.AUTH_ID.getKey());
 		if (authId != null) {

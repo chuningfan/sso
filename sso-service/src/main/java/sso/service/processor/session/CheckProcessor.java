@@ -89,11 +89,11 @@ public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result
 							packet.getResponse().sendRedirect(packet.getRequest().getParameter(SSOKey.KEY.CALLBACK_URL.getKey()) + "?" + SSOKey.KEY.AUTH_ID + "=" + packet.getSessionId());
 						} else {
 							result.setCode(StateCode.FAILURE);
-							result.setData(Constant.PAGE.PAGE_LOGIN.getPath());
+							result.setData(Constant.PAGE.PAGE_LOGIN.getPath() + "?" + SSOKey.KEY.CALLBACK_URL + "=" + packet.getCallback());
 						}
 					} else {
 						result.setCode(StateCode.FAILURE);
-						result.setData(Constant.PAGE.PAGE_LOGIN.getPath());
+						result.setData(Constant.PAGE.PAGE_LOGIN.getPath() + "?" + SSOKey.KEY.CALLBACK_URL + "=" + packet.getCallback());
 					}
 				}
 				if (session != null) {

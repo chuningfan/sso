@@ -1,5 +1,16 @@
 package sso.service.controller;
 
-public class PageController {
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import sso.core.internal.dto.Constant;
+
+@Controller
+public class PageController {
+	
+	@RequestMapping(Constant.LOGIN_PAGE)
+	public String gotoLogin() {
+		return "login";
+	}
+	
 }

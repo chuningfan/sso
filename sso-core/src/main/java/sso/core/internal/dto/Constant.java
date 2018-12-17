@@ -8,6 +8,10 @@ public interface Constant {
 	
 	public static final String URL_LOGOUT = "/sso/logout";
 	
+	public static final String LOGIN_PAGE = "/sso/page/login";
+	
+	public static final String ERROR_PAGE = "/sso/page/error";
+	
 	enum SSO {
 		
 		SSO_LOGIN(URL_LOGIN), SSO_LOGOUT(URL_LOGOUT);
@@ -30,7 +34,7 @@ public interface Constant {
 	
 	enum PAGE {
 		
-		PAGE_LOGIN("/sso/page/login"), PAGE_ERROR("/sso/page/error");
+		PAGE_LOGIN(LOGIN_PAGE), PAGE_ERROR(ERROR_PAGE);
 		
 		private String path;
 

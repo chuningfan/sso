@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Login</title>
+<script src="/static/js/sso.js"></script>
+<script src="/static/js/md5.js"></script>
+<script src="/static/js/jquery.js"></script>
+<link rel="stylesheet" href="/static/css/sso.css" />
+</head>
+<body>
+	<div id="bgTitle">VIC-SSO</div>
+	<div id="loginDiv">
+		<div id="titleDiv"></div>
+		<table id="loginTable">
+			<tr>
+				<td><label for="loginName">Login Name: </label></td>
+				<td><input id="loginName" name="loginName" type="text"
+					placeholder=" Login name" required="required" /></td>
+			</tr>
+			<tr>
+				<td><label for="password">Password: </label></td>
+				<td><input id="password" name="password" type="password"
+					placeholder=" Password" required="required" /></td>
+			</tr>
+			<tr>
+				<td><img src="/validation/code" onclick="getVerify(this);" /> <font
+					color="white">:</font></td>
+				<td><input id="validationCode" name="validationCode"
+					type="text" placeholder=" Validation code" required="required" /></td>
+			</tr>
+			<tr>
+				<td><label for="rememberMe">Remember me: </label></td>
+				<td><input id="rememberMe" name="rememberMe" type="checkbox" /></td>
+			</tr>
+		</table>
+		<div id="msg"></div>
+		<div>
+			<button id="sbmt" onclick="login();">
+				<font color="#3CA9C4">Go</font>
+			</button>
+			<button id="rgst" onclick="register();">
+				<font color="#3CA9C4">Register</font>
+			</button>
+		</div>
+	</div>
+	<div id="versionDiv">V 1.0</div>
+	<div id="coverer"></div>
+</body>
+</html>

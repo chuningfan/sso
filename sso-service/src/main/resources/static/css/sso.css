@@ -1,0 +1,69 @@
+#loginDiv {
+	width: 300px;
+	height: 200px;
+	background-color: #3CA9C4;
+	border-radius:5px;
+	margin: auto;
+	margin-top: 210px;
+	font-family: fantasy;
+	font-style: italic;
+}
+input {
+	border-radius:4px;
+}
+img {
+	border-radius:4px;	
+}
+#loginTable {
+	 margin: auto;
+}
+#sbmt {
+	width: 100px;
+	background-color: #DDDD22;
+}
+#rgst {
+	width: 100px;
+}
+label {
+	color: white;
+}
+body {
+	background-color: #778882;
+}
+#titleDiv {
+	height: 40px;
+	color: white;
+}
+#bgTitle {
+	color: white;
+	font-size: 20px;
+	font-family: sans-serif;
+}
+#versionDiv {
+	width:98%; 
+	position:fixed; 
+	bottom:0;
+	text-align: right;
+	margin-bottom: 10px;
+	font-size: 20px;
+	color: white;
+	font-family: sans-serif;
+	
+}
+#msg {
+	color: red;
+	font-family: sans-serif;
+	font-size: 3;
+	font-style: normal;
+}
+
+#coverer{
+	filter:alpha(Opacity=80);
+	-moz-opacity:0.5;
+	opacity: 0.5;
+	background-color: grey; 
+	display: none; 
+	width: 100%; 
+	height: 100%;
+	z-index: 999;
+}

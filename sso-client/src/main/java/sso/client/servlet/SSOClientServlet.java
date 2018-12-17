@@ -1,14 +1,10 @@
-package sso.client.filter;
+package sso.client.servlet;
 
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +14,9 @@ import sso.client.sso.TokenService;
 import sso.client.sso.Verifier;
 import sso.common.dto.SSOKey;
 
-public class SSOClientFilter implements Filter {
+public class SSOClientServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
 
 	private static TokenService tokenService;
 
@@ -27,31 +25,14 @@ public class SSOClientFilter implements Filter {
 	private String ssoURL;
 
 	private String tokenServiceClass;
-
+	
 	@Override
-	public void init(FilterConfig config) throws ServletException {
-		verifyURI = config.getInitParameter("verifyURI");
-		ssoURL = config.getInitParameter("ssoURL");
-		tokenServiceClass = config.getInitParameter("tokenServiceClass");
-		if (tokenService == null)
-			try {
-				tokenService = (TokenService) Class.forName(tokenServiceClass).newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doPost(req, resp);
 	}
 
 	@Override
-	public void destroy() {
-		
-	}
-
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
-			throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) resp;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String authId = request.getParameter(SSOKey.KEY.AUTH_ID.getKey());
 		if (request.getMethod().equals("GET") && authId != null) {
 			String url = request.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
@@ -62,15 +43,30 @@ public class SSOClientFilter implements Filter {
 			if (request.getParameter(SSOKey.KEY.AUTH_ID.getKey()) != null
 					&& "true".equals(request.getParameter(SSOKey.KEY.CLIENT_VERIFY.getKey()))) {
 				tokenService.createToken(authId, request, response);
-				chain.doFilter(request, response);
 			}
 		} else {
 			if (tokenService.isValid(authId, request)) {
-				chain.doFilter(request, response);
 			} else {
 				response.sendRedirect(ssoURL);
 			}
 		}
 	}
 
+	@Override
+	public void init() throws ServletException {
+		verifyURI = getInitParameter("verifyURI");
+		ssoURL = getInitParameter("ssoURL");
+		tokenServiceClass = getInitParameter("tokenServiceClass");
+		if (tokenService == null)
+			try {
+				tokenService = (TokenService) Class.forName(tokenServiceClass).newInstance();
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+	}
+
+	
+	
+	
 }

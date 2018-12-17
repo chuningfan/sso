@@ -1,6 +1,8 @@
 package sso.client.filter;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -27,12 +29,15 @@ public class SSOClientFilter implements Filter {
 	private String ssoURL;
 
 	private String tokenServiceClass;
+	
+	private String loginURI;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		verifyURI = config.getInitParameter("verifyURI");
 		ssoURL = config.getInitParameter("ssoURL");
 		tokenServiceClass = config.getInitParameter("tokenServiceClass");
+		loginURI = config.getInitParameter("loginURI");
 		if (tokenService == null)
 			try {
 				tokenService = (TokenService) Class.forName(tokenServiceClass).newInstance();
@@ -52,6 +57,8 @@ public class SSOClientFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
+		String currentURL = request.getRequestURL().toString();
+		String encodedURL = URLEncoder.encode(currentURL, "UTF-8");
 		String authId = request.getParameter(SSOKey.KEY.AUTH_ID.getKey());
 		if (request.getMethod().equals("GET") && authId != null) {
 			String url = request.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
@@ -65,10 +72,21 @@ public class SSOClientFilter implements Filter {
 				chain.doFilter(request, response);
 			}
 		} else {
-			if (tokenService.isValid(authId, request)) {
-				chain.doFilter(request, response);
+			if (!loginURI.equals(request.getRequestURI())) {
+				if (tokenService.isValid(authId, request)) {
+					chain.doFilter(request, response);
+				} else {
+					if (ssoURL == null || "".equals(ssoURL.trim())) {
+						throw new RuntimeException("SSO URL cannot be null or empty.");
+					}
+					if(ssoURL.startsWith("http://") || ssoURL.startsWith("https://")) {
+						response.sendRedirect(ssoURL + "?" + SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
+					} else {
+						response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
+					} 
+				}
 			} else {
-				response.sendRedirect(ssoURL);
+				chain.doFilter(request, response);
 			}
 		}
 	}

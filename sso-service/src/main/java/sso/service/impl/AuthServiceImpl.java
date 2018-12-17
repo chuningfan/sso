@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 
+import okhttp3.Call;
 import okhttp3.Response;
 import sso.common.dto.SSOKey;
 import sso.common.dto.UserInfo;
@@ -33,7 +34,13 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 			byte[] bytes = response.body().bytes();
 			return mapper.readValue(bytes, UserInfo.class);
 		}
-		return null;
+		//for test, create a fake dto
+		UserInfo info = new UserInfo();
+		info.setFamilyName("Chu");
+		info.setGivenName("Vic");
+	    info.setRole("r1");
+	    info.setUserId(1L);
+		return info;
 	}
 
 	@Override
@@ -47,7 +54,6 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 		// TODO Auto-generated method stub
 		return "http://127.0.0.1:8080/WebTest/login";
 	}
-
-	
 	
 }
+

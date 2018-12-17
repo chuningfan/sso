@@ -57,11 +57,11 @@ public class SSOServlet extends HttpServlet {
 		} else {
 			try {
 				result = checkProcessor.process0(new SSORequest(req, resp), result);
-				if (result.getData().startsWith(Constant.KEY.DIRECT_HEADER.getKey())) {
+				if (result.getData() != null && result.getData().startsWith(Constant.KEY.DIRECT_HEADER.getKey())) {
 					String directURL = result.getData().replace(Constant.KEY.DIRECT_HEADER.getKey(), "");
 					resp.sendRedirect(directURL);
 				} else {
-					req.getRequestDispatcher(result.getData()).forward(req, resp);
+					req.getRequestDispatcher(Constant.LOGIN_PAGE).forward(req, resp);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

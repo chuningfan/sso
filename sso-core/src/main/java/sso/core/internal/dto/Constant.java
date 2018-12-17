@@ -70,22 +70,22 @@ public interface Constant {
 	
 	enum TIME {
 		
-		STAY_IN_ACCESSED(7, TimeUnit.DAYS), LOGIN_ACCESSED(30, TimeUnit.MINUTES);
+		STAY_IN_ACCESSED(3600 * 24 * 7, TimeUnit.SECONDS), LOGIN_ACCESSED(30, TimeUnit.MINUTES);
 		
-		private long time;
+		private int time;
 		
 		private TimeUnit timeUnit;
 
-		private TIME(long time, TimeUnit timeUnit) {
+		private TIME(int time, TimeUnit timeUnit) {
 			this.time = time;
 			this.timeUnit = timeUnit;
 		}
 
-		public long getTime() {
+		public int getTime() {
 			return time;
 		}
 
-		public void setTime(long time) {
+		public void setTime(int time) {
 			this.time = time;
 		}
 
@@ -95,6 +95,26 @@ public interface Constant {
 
 		public void setTimeUnit(TimeUnit timeUnit) {
 			this.timeUnit = timeUnit;
+		}
+		
+	}
+	
+	enum COOKIE_KEY {
+		
+		REMEMBER_ME("rm"), TOKEN("wand");
+		
+		private String key;
+
+		private COOKIE_KEY(String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
 		}
 		
 	}

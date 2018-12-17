@@ -4,7 +4,7 @@ public interface SSOKey {
 
 	enum KEY {
 
-		CALLBACK_URL("callback"), AUTH_ID("authId"), CLIENT_PASSPORT("sso_passport");
+		CALLBACK_URL("callback"), AUTH_ID("authId"), CLIENT_PASSPORT("sso_passport"), RBM("rbm"), VERIFIER_CALLBACK("verifier_callback"), CLIENT_VERIFY("verified");;
 
 		private String key;
 
@@ -39,6 +39,26 @@ public interface SSOKey {
 		public void setType(String type) {
 			this.type = type;
 		}
+	}
+	
+	enum SSO_PATH {
+		
+		CLIENT_VERIFY("/verify");
+		
+		private String path;
+
+		private SSO_PATH(String path) {
+			this.path = path;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
+		
 	}
 	
 }

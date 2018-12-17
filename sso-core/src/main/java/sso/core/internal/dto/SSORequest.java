@@ -66,4 +66,8 @@ public class SSORequest {
 		this.cookies = cookies;
 	}
 	
+	public void rebuildSessionId() {
+		this.sessionId = request.getSession(false) != null ? request.getSession().getId() : null;
+	}
+	
 }

@@ -27,8 +27,6 @@ public class SSOClientFilter implements Filter {
 
 	private static TokenService tokenService;
 
-	private String verifyURI;
-
 	private String ssoURL;
 
 	private String tokenServiceClass;
@@ -39,7 +37,6 @@ public class SSOClientFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		verifyURI = config.getInitParameter("verifyURI");
 		ssoURL = config.getInitParameter("ssoURL");
 		tokenServiceClass = config.getInitParameter("tokenServiceClass");
 		exclusions = config.getInitParameter("exclusions");
@@ -88,8 +85,7 @@ public class SSOClientFilter implements Filter {
 						dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
 						Response res = Verifier.post(url, dataMap);
 						if (Boolean.parseBoolean(res.body().string())) {
-							tokenService.createToken(authId, request, response);
-						}
+							tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));						}
 					}
 				}
 			} else if (tokenService.isValid(request)) {

@@ -12,6 +12,8 @@ public interface Constant {
 	
 	public static final String LOGIN_PAGE = "/sso/page/login";
 	
+	public static final String VERIFY_PAGE = "/sso/page/verify";
+	
 	public static final String ERROR_PAGE = "/sso/page/error";
 	
 	enum SSO {
@@ -36,7 +38,7 @@ public interface Constant {
 	
 	enum PAGE {
 		
-		PAGE_LOGIN(LOGIN_PAGE), PAGE_ERROR(ERROR_PAGE);
+		PAGE_LOGIN(LOGIN_PAGE), PAGE_ERROR(ERROR_PAGE), PAGE_VERIFY(VERIFY_PAGE);
 		
 		private String path;
 

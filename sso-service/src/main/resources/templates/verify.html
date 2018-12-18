@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Login</title>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/verify.js"></script>
+<link rel="stylesheet" href="/static/css/sso.css" />
+<script type="text/javascript">
+	$(document).ready(function() {
+		var authId = getCookie("SESSION")
+		var url = "/sso/page/login"
+		if (authId) {
+			url = "/validate.do?authId=" + authId;
+			var options = {
+					url: url,
+					type: "GET",
+					async: false
+				}
+			$.ajax(options);
+		} else {
+			var query = window.location.search;
+			window.location.href = window.location.protocol + "//" + window.location.host + "/sso/page/login" + query;
+		}
+		
+	});
+</script>
+</head>
+<body>
+</body>
+</html>

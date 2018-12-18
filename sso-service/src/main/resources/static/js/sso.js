@@ -14,8 +14,7 @@ function login() {
 		success : function(res) {
 			window.location.href=res.url;
 		},
-		dataType : "json",
-		timeout : 30000
+		dataType : "json"
 	};
 	$.ajax(options);
 }

@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 	@Override
 	public String getAuthUrl(String authId) {
 		// TODO Auto-generated method stub
-		return "http://127.0.0.1:8080/TestWebProject/login";
+		return "http://127.0.0.1:8080/WebTest/login";
 	}
 	
 }

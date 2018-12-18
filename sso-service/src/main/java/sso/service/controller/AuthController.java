@@ -50,11 +50,12 @@ public class AuthController {
 				session.setMaxInactiveInterval(Constant.TIME.STAY_IN_ACCESSED.getTime());
 			}
 			String url = URLDecoder.decode(request.getParameter("callback"), "UTF-8") + "?" + SSOKey.KEY.AUTH_ID.getKey() + "=" + session.getId() + "&" + 
-					SSOKey.KEY.RBM.getKey() + "=" + (request.getParameter("rememberMe")) + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + URLEncoder.encode("http://127.0.0.1:8081" + Constant.URL_VERIFY, "UTF-8");
+					SSOKey.KEY.RBM.getKey() + "=" + (request.getParameter("rememberMe"));
 			Map<String, String> res = Maps.newHashMap();
 			res.put("url", url);
 			try (PrintWriter writer = response.getWriter();) {
 				writer.write(mapper.writeValueAsString(res));
+				writer.flush();
 			}
 		}
 	}

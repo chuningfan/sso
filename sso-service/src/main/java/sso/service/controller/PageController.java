@@ -13,4 +13,9 @@ public class PageController {
 		return "login";
 	}
 	
+	@RequestMapping(Constant.VERIFY_PAGE)
+	public String gotoVerify() {
+		return "verify";
+	}
+	
 }

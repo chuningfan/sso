@@ -43,7 +43,7 @@ public interface SSOKey {
 	
 	enum SSO_PATH {
 		
-		CLIENT_VERIFY("/verify");
+		CLIENT_VALIDATE("/validate.do"), CLIENT_VERIFY("/sso/verify");
 		
 		private String path;
 

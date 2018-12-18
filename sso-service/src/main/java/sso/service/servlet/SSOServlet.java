@@ -43,33 +43,46 @@ public class SSOServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		if (requestClient == null)
 			requestClient = SpringHelper.getComponent(RequestClient.class);
-		Result<String> result = new Result<String>();
 		String authId = req.getParameter(SSOKey.KEY.AUTH_ID.getKey());
 		if (authId != null) {
-			UserInfo info = req.getSession().getAttribute(authId) == null ? null : (UserInfo)req.getSession().getAttribute(authId);
-			if (info != null) {
-				String url = req.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
-				Map<String, String> dataMap = Maps.newHashMap();
-				dataMap.put(SSOKey.SSO_PATH.CLIENT_VERIFY.getPath(), "true");
-				dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
-				requestClient.post(url, dataMap, null);
+			if (verify(authId)) {
+				
+			} else {
+				req.getRequestDispatcher(Constant.LOGIN_PAGE).forward(req, resp);
 			}
 		} else {
-			try {
-				result = checkProcessor.process0(new SSORequest(req, resp), result);
-				if (result.getData() != null && result.getData().startsWith(Constant.KEY.DIRECT_HEADER.getKey())) {
-					String directURL = result.getData().replace(Constant.KEY.DIRECT_HEADER.getKey(), "");
-					resp.sendRedirect(directURL);
-				} else {
-					req.getRequestDispatcher(Constant.LOGIN_PAGE).forward(req, resp);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				LOG.error(e.getMessage());
-				req.setAttribute("exception", e);
-				req.getRequestDispatcher(Constant.PAGE.PAGE_ERROR.getPath()).forward(req, resp);
-			}
+			req.getRequestDispatcher(Constant.VERIFY_PAGE).forward(req, resp);
 		}
+//		if (authId != null) {
+//			UserInfo info = req.getSession().getAttribute(authId) == null ? null : (UserInfo)req.getSession().getAttribute(authId);
+//			if (info != null) {
+//				String url = req.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
+//				Map<String, String> dataMap = Maps.newHashMap();
+//				dataMap.put(SSOKey.SSO_PATH.CLIENT_VERIFY.getPath(), "true");
+//				dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
+//				requestClient.post(url, dataMap, null);
+//			}
+//		} else {
+//			try {
+//				result = checkProcessor.process0(new SSORequest(req, resp), result);
+//				if (result.getData() != null && result.getData().startsWith(Constant.KEY.DIRECT_HEADER.getKey())) {
+//					String directURL = result.getData().replace(Constant.KEY.DIRECT_HEADER.getKey(), "");
+//					resp.sendRedirect(directURL);
+//				} else {
+//					req.getRequestDispatcher(Constant.LOGIN_PAGE).forward(req, resp);
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				LOG.error(e.getMessage());
+//				req.setAttribute("exception", e);
+//				req.getRequestDispatcher(Constant.PAGE.PAGE_ERROR.getPath()).forward(req, resp);
+//			}
+//		}
+	}
+
+	private boolean verify(String authId) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

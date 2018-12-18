@@ -2,6 +2,7 @@ package sso.client.filter;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,17 +28,25 @@ public class SSOClientFilter implements Filter {
 
 	private static TokenService tokenService;
 
+	private String SSOAddress;
+	
 	private String ssoURL;
 
 	private String tokenServiceClass;
 
 	private String exclusions;
+	
+	private String verifyURL;
 
 	private static List<String> exclusionList;
 
+	private static List<String> rewriteFilter = Lists.newArrayList();
+	
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		ssoURL = config.getInitParameter("ssoURL");
+		SSOAddress = config.getInitParameter("SSOAddress");
+		ssoURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VALIDATE.getPath();
+		verifyURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VERIFY.getPath();
 		tokenServiceClass = config.getInitParameter("tokenServiceClass");
 		exclusions = config.getInitParameter("exclusions");
 		if (exclusionList == null && exclusions != null && exclusions.trim().length() > 0) {
@@ -56,6 +65,9 @@ public class SSOClientFilter implements Filter {
 				Thread.currentThread().interrupt();
 			}
 		}
+		rewriteFilter.add(SSOKey.KEY.AUTH_ID.getKey() + "=");
+		rewriteFilter.add(SSOKey.KEY.CALLBACK_URL.getKey() + "=");
+		rewriteFilter.add(SSOKey.KEY.RBM.getKey() + "=");
 	}
 
 	@Override
@@ -77,15 +89,22 @@ public class SSOClientFilter implements Filter {
 		} else {
 			if (authId != null) {
 				if (tokenService.isValid(request)) {
+//					String canonicalURL = rewriteURL(request.getQueryString());
+//					request.getRequestDispatcher(request.getRequestURI() + (canonicalURL == null ? "" : "?" + canonicalURL)).forward(request, response);
+//					return;
 					chain.doFilter(request, response);
 				} else {
 					if (authId != null) {
-						String url = request.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
 						Map<String, String> dataMap = Maps.newHashMap();
 						dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
-						Response res = Verifier.post(url, dataMap);
+						Response res = Verifier.post(verifyURL, dataMap);
 						if (Boolean.parseBoolean(res.body().string())) {
-							tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));						}
+							tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));
+//							String canonicalURL = rewriteURL(request.getQueryString());
+//							request.getRequestDispatcher(request.getRequestURI() + (canonicalURL == null ? "" : "?" + canonicalURL)).forward(request, response);
+//							return;
+							chain.doFilter(request, response);
+						}
 					}
 				}
 			} else if (tokenService.isValid(request)) {
@@ -100,42 +119,37 @@ public class SSOClientFilter implements Filter {
 					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
 				}
 			}
-			// if (authId != null) {
-			// String url =
-			// request.getParameter(SSOKey.KEY.CALLBACK_URL.getKey());
-			//// Map<String, String> dataMap = Maps.newHashMap();
-			//// dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
-			//// Verifier.post(url, dataMap);
-			// response.sendRedirect(url + "?" + SSOKey.KEY.AUTH_ID.getKey() +
-			// "=" + authId);
-			// } else if (request.getMethod().equals("POST") &&
-			// verifyURI.equals(request.getRequestURI())) {
-			// // request from SSO service
-			// if (request.getParameter(SSOKey.KEY.AUTH_ID.getKey()) != null
-			// &&
-			// "true".equals(request.getParameter(SSOKey.KEY.CLIENT_VERIFY.getKey())))
-			// {
-			// tokenService.createToken(authId, request, response);
-			// chain.doFilter(request, response);
-			// }
-			// } else {
-			// if (tokenService.isValid(authId, request)) {
-			// chain.doFilter(request, response);
-			// } else {
-			// if (ssoURL == null || "".equals(ssoURL.trim())) {
-			// throw new RuntimeException("SSO URL cannot be null or empty.");
-			// }
-			// if (ssoURL.startsWith("http://") ||
-			// ssoURL.startsWith("https://")) {
-			// response.sendRedirect(ssoURL + "?" + SSOKey.KEY.CALLBACK_URL +
-			// "=" + encodedURL);
-			// } else {
-			// response.sendRedirect("http://" + ssoURL + "?" +
-			// SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
-			// }
-			// }
-			// }
 		}
 	}
 
+	private String rewriteURL(String queryString) {
+		if (queryString != null && queryString.trim().length() > 0) {
+			String[] parameters = queryString.split("&");
+			List<String> paramList = Lists.newArrayList(parameters);
+			Iterator<String> itr = paramList.iterator();
+			while (itr.hasNext()) {
+				String param = itr.next();
+				if (need2Rmv(param)) {
+					itr.remove();
+				}
+			}
+			if (paramList.size() > 0) {
+				StringBuilder builder = new StringBuilder();
+				paramList.stream().forEach(p -> {
+					if (builder.length() == 0) {
+						builder.append(p);
+					} else {
+						builder.append("&" + p);
+					}
+				});
+				return builder.toString();
+			}
+		}
+		return null;
+	}
+	
+	private boolean need2Rmv(String str) {
+		return rewriteFilter.stream().anyMatch(s -> str.startsWith(s));
+	}
+	
 }

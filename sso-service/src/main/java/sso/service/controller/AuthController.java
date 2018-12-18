@@ -4,11 +4,13 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.assertj.core.util.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,7 @@ public class AuthController {
 		Result<UserInfo> result = new Result<UserInfo>();
 		boolean isRememberMe = Boolean.parseBoolean(request.getParameter("rememberMe"));
 		result = loginProcessor.process0(new SSORequest(request, response), result);
+		String serviceId = request.getParameter(SSOKey.KEY.SERVICE_ID.getKey());
 		// TODO return data to jquery, then redirect.
 		if (StateCode.SUCCESS == result.getCode() && result.getData() != null) {
 			HttpSession session = request.getSession();
@@ -49,6 +52,12 @@ public class AuthController {
 			if (isRememberMe) {
 				session.setMaxInactiveInterval(Constant.TIME.STAY_IN_ACCESSED.getTime());
 			}
+			Set<String> logoutSet = session.getAttribute(Constant.KEY.LOGOUT_URLS.getKey()) == null ?
+					null : (Set<String>)session.getAttribute(Constant.KEY.LOGOUT_URLS.getKey());
+			if(logoutSet == null) {
+				logoutSet = Sets.newHashSet();
+			}
+			logoutSet.add(loginProcessor.getLogoutUrl(serviceId));
 			String url = URLDecoder.decode(request.getParameter("callback"), "UTF-8") + "?" + SSOKey.KEY.AUTH_ID.getKey() + "=" + session.getId() + "&" + 
 					SSOKey.KEY.RBM.getKey() + "=" + (request.getParameter("rememberMe"));
 			Map<String, String> res = Maps.newHashMap();

@@ -26,8 +26,8 @@ import sso.common.dto.SSOKey;
 
 public class SSOClientFilter implements Filter {
 
-	private static TokenService tokenService;
-
+	private TokenService tokenService;
+	
 	private String SSOAddress;
 	
 	private String ssoURL;
@@ -38,12 +38,15 @@ public class SSOClientFilter implements Filter {
 	
 	private String verifyURL;
 
-	private static List<String> exclusionList;
+	private List<String> exclusionList;
+	
+	private String serviceId;
 
 	private static List<String> rewriteFilter = Lists.newArrayList();
 	
 	@Override
 	public void init(FilterConfig config) throws ServletException {
+		serviceId = config.getInitParameter("serviceId");
 		SSOAddress = config.getInitParameter("SSOAddress");
 		ssoURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VALIDATE.getPath();
 		verifyURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VERIFY.getPath();
@@ -89,9 +92,6 @@ public class SSOClientFilter implements Filter {
 		} else {
 			if (authId != null) {
 				if (tokenService.isValid(request)) {
-//					String canonicalURL = rewriteURL(request.getQueryString());
-//					request.getRequestDispatcher(request.getRequestURI() + (canonicalURL == null ? "" : "?" + canonicalURL)).forward(request, response);
-//					return;
 					chain.doFilter(request, response);
 				} else {
 					if (authId != null) {
@@ -100,9 +100,7 @@ public class SSOClientFilter implements Filter {
 						Response res = Verifier.post(verifyURL, dataMap);
 						if (Boolean.parseBoolean(res.body().string())) {
 							tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));
-//							String canonicalURL = rewriteURL(request.getQueryString());
-//							request.getRequestDispatcher(request.getRequestURI() + (canonicalURL == null ? "" : "?" + canonicalURL)).forward(request, response);
-//							return;
+							
 							chain.doFilter(request, response);
 						}
 					}
@@ -114,9 +112,9 @@ public class SSOClientFilter implements Filter {
 					throw new RuntimeException("SSO URL cannot be null or empty.");
 				}
 				if (ssoURL.startsWith("http://") || ssoURL.startsWith("https://")) {
-					response.sendRedirect(ssoURL + "?" + SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
+					response.sendRedirect(ssoURL + "?" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL + "&" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId);
 				} else {
-					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.CALLBACK_URL + "=" + encodedURL);
+					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL + "&" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId);
 				}
 			}
 		}

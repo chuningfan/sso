@@ -4,7 +4,7 @@ public interface SSOKey {
 
 	enum KEY {
 
-		CALLBACK_URL("callback"), AUTH_ID("authId"), CLIENT_PASSPORT("sso_passport"), RBM("rbm"), VERIFIER_CALLBACK("verifier_callback"), CLIENT_VERIFY("verified");;
+		CALLBACK_URL("callback"), AUTH_ID("authId"), CLIENT_PASSPORT("sso_passport"), RBM("rbm"), VERIFIER_CALLBACK("verifier_callback"), CLIENT_VERIFY("verified"), SERVICE_ID("service_id");
 
 		private String key;
 

@@ -58,7 +58,7 @@ public interface Constant {
 	
 	enum KEY {
 		
-		DIRECT_HEADER("direct:");
+		DIRECT_HEADER("direct:"), LOGOUT_URLS("logout_urls");
 		
 		private String key;
 

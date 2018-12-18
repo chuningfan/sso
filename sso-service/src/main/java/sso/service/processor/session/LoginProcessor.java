@@ -73,7 +73,7 @@ public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Resu
 	 * Unused method in current class.
 	 */
 	@Override
-	public String getLogoutUrl(String authId) {
+	public String getLogoutUrl(String serviceId) {
 		return null;
 	}
 

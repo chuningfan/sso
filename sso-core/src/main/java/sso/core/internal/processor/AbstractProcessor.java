@@ -18,6 +18,6 @@ public abstract class AbstractProcessor<T, P extends SSORequest, R extends Resul
 		return chain.start(packet, result);
 	}
 	
-	public abstract String getLogoutUrl(String authId);
+	public abstract String getLogoutUrl(String serviceId);
 	
 }

@@ -1,32 +1,18 @@
 function login() {
+	var callback = window.location.search.replace("?CALLBACK_URL=", "");
 	var data = {
 	'loginName': $('#loginName').val(),
 	'password': md5($("#password").val()),
 	'validationCode': $('#validationCode').val(),
 	'rememberMe': $('#rememberMe').val(),
+	'callback': callback
 	};
 	var options = {
 		url : "/sso/login",
 		type : "post",
 		data: data,
 		success : function(res) {
-			switch (res.code) {
-			case -1:
-				alert("System is busy, please try again later.")
-				break;
-			case 1:
-				jump('/sso/jump');
-				break;
-			case -99:
-				showError("Incorrect invalidation code!");
-				break;
-			case 0:
-				showError("Incorrect login name or password!");
-				break;
-			case 99:
-				showError("Account was locked, please contact with the administrator!");
-				break;
-			}
+			window.location.href=res.url;
 		},
 		dataType : "json",
 		timeout : 30000

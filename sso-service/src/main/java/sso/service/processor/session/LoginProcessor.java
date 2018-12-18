@@ -1,6 +1,7 @@
 package sso.service.processor.session;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,42 +58,15 @@ public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Resu
 		public Result<UserInfo> process0(SSORequest packet, Result<UserInfo> result) throws Exception {
 			String loginName = packet.getRequest().getParameter("loginName");
 			String password = packet.getRequest().getParameter("password");
-			boolean isRememberMe = Boolean.parseBoolean(packet.getRequest().getParameter("rememberMe"));
 			UserInfo info = authServiceImpl.login(loginName, password);
 			if (info != null) {
 				result.setData(info);
-				HttpSession session = packet.getRequest().getSession(true);
-				String sessionId = session.getId();
-//				redisClient.save(sessionId, session, Constant.TIME.LOGIN_ACCESSED.getTime(), Constant.TIME.LOGIN_ACCESSED.getTimeUnit());
-//				ehClient.save(sessionId, session, Constant.TIME.LOGIN_ACCESSED.getTime(), Constant.TIME.LOGIN_ACCESSED.getTimeUnit());
-				if (isRememberMe) {
-					session.setMaxInactiveInterval(Constant.TIME.STAY_IN_ACCESSED.getTime());
-//					String value = SaltDealer.getSaltedString(password) + SaltDealer.base64encrypt(loginName);
-//					HttpUtil.setCookie(packet.getRequest(), packet.getResponse(), Constant.COOKIE_KEY.REMEMBER_ME.getKey(), value, Constant.TIME.STAY_IN_ACCESSED.getTime(), null);
-					session.setAttribute(sessionId, info);
-				}
-				packet.getResponse().sendRedirect(packet.getCallback() + "?" + SSOKey.KEY.AUTH_ID + "=" + session.getId() + "&" + SSOKey.KEY.RBM + "=" + isRememberMe);
 			} else {
 				result.setCode(StateCode.FAILURE);
 				result.setMessage("Invalid login name or password");
 			}
 			return result;
 		}
-	}
-	
-	public Result<UserInfo> processForChecking(HttpServletRequest request, HttpServletResponse response, String loginName, String saltedPassword) throws IOException {
-		UserInfo info = authServiceImpl.login(loginName, saltedPassword);
-		Result<UserInfo> result = new Result<UserInfo>();
-		if (info != null) {
-			result.setData(info);
-			HttpSession session = request.getSession(true);
-			String sessionId = session.getId();
-			session.setAttribute(sessionId, info);
-		} else {
-			result.setCode(StateCode.FAILURE);
-			result.setMessage("Invalid login name or password");
-		}
-		return result;
 	}
 	
 	/**

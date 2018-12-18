@@ -1,7 +1,11 @@
 package sso.common.dto;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
 	
+	private static final long serialVersionUID = -4024428067740208872L;
+
 	private Long userId;
 	
 	private String givenName;

@@ -45,7 +45,7 @@ public class SSOClientServlet extends HttpServlet {
 				tokenService.createToken(authId, request, response);
 			}
 		} else {
-			if (tokenService.isValid(authId, request)) {
+			if (tokenService.isValid(request)) {
 			} else {
 				response.sendRedirect(ssoURL);
 			}

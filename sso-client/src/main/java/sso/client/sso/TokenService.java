@@ -7,6 +7,6 @@ public interface TokenService {
 	
 	void createToken(String authId, HttpServletRequest request, HttpServletResponse response);
 	
-	boolean isValid(String authId, HttpServletRequest request);
+	boolean isValid(HttpServletRequest request);
 	
 }

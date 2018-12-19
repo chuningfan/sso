@@ -123,23 +123,29 @@ public class SSOClientFilter implements Filter {
 					if (Boolean.parseBoolean(res.body().string())) {
 						tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));
 						chain.doFilter(request, response);
-					}	
+					} else {
+						gotoValidate(response, encodedURL);
+					}
 				}
 			} else if (tokenService.isValid(request)) {
 				chain.doFilter(request, response);
 			} else {
-				if (ssoURL == null || "".equals(ssoURL.trim())) {
-					throw new RuntimeException("SSO URL cannot be null or empty.");
-				}
-				if (ssoURL.startsWith("http://") || ssoURL.startsWith("https://")) {
-					response.sendRedirect(ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
-				} else {
-					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
-				}
+				gotoValidate(response, encodedURL);
 			}
 		}
 	}
 
+	private void gotoValidate(HttpServletResponse response, String encodedURL) throws IOException {
+		if (ssoURL == null || "".equals(ssoURL.trim())) {
+			throw new RuntimeException("SSO URL cannot be null or empty.");
+		}
+		if (ssoURL.startsWith("http://") || ssoURL.startsWith("https://")) {
+			response.sendRedirect(ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
+		} else {
+			response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
+		}
+	}
+	
 //	private String rewriteURL(String queryString) {
 //		if (queryString != null && queryString.trim().length() > 0) {
 //			String[] parameters = queryString.split("&");

@@ -16,7 +16,7 @@ public @interface EnableSSOClient {
 
 	String SSOAddress();
 	
-	String tokenServiceClass();
+	String tokenServiceClass() default "";
 
 	String[] exclusions() default "";
 	

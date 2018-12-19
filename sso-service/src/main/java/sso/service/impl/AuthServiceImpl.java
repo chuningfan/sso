@@ -51,12 +51,6 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 	}
 
 	@Override
-	public boolean logout(String key) throws IOException {
-		
-		return false;
-	}
-
-	@Override
 	public String getAuthUrl(String serviceId) {
 		// TODO Auto-generated method stub
 		return "http://127.0.0.1:8080/user/login";

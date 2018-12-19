@@ -35,9 +35,9 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 			@Override
 			public OkHttpClient getClient() {
 				return new OkHttpClient().newBuilder()
-						.readTimeout(1, TimeUnit.HOURS)
-						.writeTimeout(1, TimeUnit.HOURS)
-						.connectTimeout(1, TimeUnit.HOURS)
+						.readTimeout(10, TimeUnit.SECONDS)
+						.writeTimeout(10, TimeUnit.SECONDS)
+						.connectTimeout(10, TimeUnit.SECONDS)
 						.build();
 			}
 		});

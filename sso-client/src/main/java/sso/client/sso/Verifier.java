@@ -48,8 +48,8 @@ public class Verifier {
 	
 	private static final OkHttpClient getClientWithConfig() {
 		return new OkHttpClient().newBuilder()
-				.readTimeout(300000, TimeUnit.MILLISECONDS)
-				.writeTimeout(300000, TimeUnit.MILLISECONDS)
+				.readTimeout(5000, TimeUnit.MILLISECONDS)
+				.writeTimeout(5000, TimeUnit.MILLISECONDS)
 				.build();
 	}
 	

@@ -14,24 +14,26 @@ public class DataHelper {
     
     private String properiesName = "data.properties";
     
+    private static volatile Properties p;
+    
+    private static final String BASIC_PATH = DataHelper.class.getClassLoader().getResource("").getPath();
+    
+    public void reload() {
+    	Properties temp = getProperties();
+    	p = temp;
+    }
+    
     public String readProperty(String key) {
-        String value = "";
-        InputStream is = null;
-        try {
-            is = DataHelper.class.getClassLoader().getResourceAsStream(properiesName);
-            Properties p = new Properties();
-            p.load(is);
-            value = p.getProperty(key);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (p != null) {
+        	return p.getProperty(key);
+        } else {
+        	reload();
+        	if (p != null) {
+        		return p.getProperty(key);
+        	} else {
+        		throw new RuntimeException("No config data found!");
+        	}
         }
-        return value;
     }
 
     public Properties getProperties() {
@@ -52,20 +54,21 @@ public class DataHelper {
         return p;
     }
 
-    public void writeProperty(String key, String value) {
+    public boolean writeProperty(String key, String value) {
         InputStream is = null;
         OutputStream os = null;
         Properties p = new Properties();
         try {
-            is = new FileInputStream(properiesName);
+            is = new FileInputStream(BASIC_PATH + properiesName);
             p.load(is);
-            os = new FileOutputStream(properiesName);
+            os = new FileOutputStream(BASIC_PATH + properiesName);
             p.setProperty(key, value);
             p.store(os, key);
             os.flush();
-            os.close();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
             try {
                 if (null != is)
@@ -75,6 +78,7 @@ public class DataHelper {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            reload();
         }
 
     }

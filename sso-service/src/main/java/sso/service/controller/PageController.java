@@ -18,4 +18,9 @@ public class PageController {
 		return "verify";
 	}
 	
+	@RequestMapping(Constant.CONFIG_PAGE)
+	public String gotoConfig() {
+		return  "config";
+	}
+	
 }

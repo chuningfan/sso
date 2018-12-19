@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Busy Now!</title>
+        <script src="/static/js/jquery.js" ></script>
+        <script type="text/javascript">
+        	function add() {
+        		var options = {
+        				url: '/config',
+        				type: 'POST',
+        				data: {
+        					serviceId: $('#serviceId').val(),
+        					authURL: $('#authURL').val(),
+        					logoutURL: $('#logoutURL').val()
+        				},
+        				success: function(data) {
+        					if (data) {
+        						alert('OK');
+        					}
+        				},
+        				error: function(e) {
+        					
+        				}
+        		};
+        		$.ajax(options);
+        	}
+        </script>
+    </head>
+    <body>
+       <label for="serviceId">Service ID:</label>
+       <input type="text" id="serviceId" />
+       <label for="authURL">Authentication URL:</label>
+       <input type="text" id="authURL" />
+       <label for="logoutURL">Logout URL:</label>
+       <input type="text" id="logoutURL" />
+       <button onclick="add();">Add</button>
+    </body>
+</html>

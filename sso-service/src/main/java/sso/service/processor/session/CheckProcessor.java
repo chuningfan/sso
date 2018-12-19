@@ -1,18 +1,11 @@
 package sso.service.processor.session;
 
-import java.util.Set;
-
 import javax.servlet.http.HttpSession;
 
-import org.assertj.core.util.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import sso.common.dto.SSOKey;
-import sso.common.dto.UserInfo;
-import sso.common.util.HttpUtil;
-import sso.common.util.SaltDealer;
 import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
@@ -20,31 +13,27 @@ import sso.core.internal.dto.StateCode;
 import sso.core.internal.handler.AbstractAuthHandler;
 import sso.core.internal.handler.ChainHandler;
 import sso.core.internal.processor.AbstractProcessor;
-import sso.core.service.AuthService;
-import sso.service.cache.AccessRedisClient;
-import sso.service.cache.session.EhClient;
-import sso.service.cache.session.RedisClient;
 
 public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result<String>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CheckProcessor.class);
 	
-	private static final String ACCESS_URL_PREFIX = "access_url_";
+//	private static final String ACCESS_URL_PREFIX = "access_url_";
 	
-	@Autowired
-	private AuthService<String, UserInfo> authService;
-	
-	@Autowired
-	private EhClient ehClient;
-	
-	@Autowired
-	private RedisClient redisClient;
-	
-	@Autowired
-	private AccessRedisClient accessRedisClient;
-	
-	@Autowired
-	private LoginProcessor loginProcessor; 
+//	@Autowired
+//	private AuthService<String, UserInfo> authService;
+//	
+//	@Autowired
+//	private EhClient ehClient;
+//	
+//	@Autowired
+//	private RedisClient redisClient;
+//	
+//	@Autowired
+//	private AccessRedisClient accessRedisClient;
+//	
+//	@Autowired
+//	private LoginProcessor loginProcessor; 
 	
 	@Override
 	public void initChain(ChainHandler<String, SSORequest, Result<String>> handler) {
@@ -70,7 +59,7 @@ public class CheckProcessor extends AbstractProcessor<String, SSORequest, Result
 				LOG.info("Valid session: from server.");
 			} else {
 				result.setCode(StateCode.FAILURE);
-				result.setData(Constant.PAGE.PAGE_LOGIN.getPath() + "?" + SSOKey.KEY.CALLBACK_URL + "=" + packet.getCallback());
+				result.setData(Constant.PAGE.PAGE_LOGIN.getPath() + "?" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + packet.getCallback());
 //				// check local cache
 //				session = ehClient.get(packet.getSessionId());
 //				if (session != null) {

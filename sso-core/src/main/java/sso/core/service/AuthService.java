@@ -8,6 +8,6 @@ public interface AuthService<K, V> {
 	
 	boolean logout(K key) throws IOException;
 	
-	String getAuthUrl(String authId);
+	String getAuthUrl(String serviceId);
 	
 }

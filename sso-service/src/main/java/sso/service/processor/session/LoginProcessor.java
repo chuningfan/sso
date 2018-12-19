@@ -1,35 +1,25 @@
 package sso.service.processor.session;
 
-import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sso.common.dto.SSOKey;
 import sso.common.dto.UserInfo;
-import sso.core.internal.dto.Constant;
 import sso.core.internal.dto.Result;
 import sso.core.internal.dto.SSORequest;
 import sso.core.internal.dto.StateCode;
 import sso.core.internal.handler.AbstractAuthHandler;
 import sso.core.internal.handler.ChainHandler;
 import sso.core.internal.processor.AbstractProcessor;
-import sso.service.cache.session.EhClient;
-import sso.service.cache.session.RedisClient;
 import sso.service.impl.AuthServiceImpl;
 
 public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Result<UserInfo>> {
 
-	@Autowired
-	private EhClient ehClient;
-	
-	@Autowired
-	private RedisClient redisClient;
+//	@Autowired
+//	private EhClient ehClient;
+//	
+//	@Autowired
+//	private RedisClient redisClient;
 	
 	@Autowired
 	private AuthServiceImpl authServiceImpl;
@@ -74,7 +64,7 @@ public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Resu
 	 */
 	@Override
 	public String getLogoutUrl(String serviceId) {
-		return null;
+		return "http://127.0.0.1:8080/user/logout";
 	}
 
 	

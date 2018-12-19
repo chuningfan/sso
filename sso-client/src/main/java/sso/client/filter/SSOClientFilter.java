@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,7 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,30 +27,31 @@ import sso.common.dto.SSOKey;
 public class SSOClientFilter implements Filter {
 
 	private TokenService tokenService;
-	
+
 	private String SSOAddress;
-	
+
 	private String ssoURL;
 
 	private String tokenServiceClass;
 
 	private String exclusions;
-	
+
 	private String verifyURL;
 
 	private List<String> exclusionList;
-	
+
 	private String serviceId;
 
 	private static List<String> rewriteFilter = Lists.newArrayList();
-	
+
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		serviceId = config.getInitParameter("serviceId");
 		SSOAddress = config.getInitParameter("SSOAddress");
-		ssoURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VALIDATE.getPath();
-		verifyURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VERIFY.getPath();
 		tokenServiceClass = config.getInitParameter("tokenServiceClass");
+		check();
+		ssoURL = SSOAddress + "/sso/page/verify";
+		verifyURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VERIFY.getPath();
 		exclusions = config.getInitParameter("exclusions");
 		if (exclusionList == null && exclusions != null && exclusions.trim().length() > 0) {
 			String splitter = ";";
@@ -73,11 +74,33 @@ public class SSOClientFilter implements Filter {
 		rewriteFilter.add(SSOKey.KEY.RBM.getKey() + "=");
 	}
 
-	@Override
-	public void destroy() {
-
+	private void check() {
+		if (serviceId == null || "".equals(serviceId.trim())) {
+			throwNullException("serviceId");
+		}
+		if (SSOAddress == null || "".equals(SSOAddress.trim())) {
+			throwNullException("SSOAddress");
+		}
+		if (tokenServiceClass == null || "".equals(tokenServiceClass.trim())) {
+			ServiceLoader<TokenService> service = ServiceLoader.load(TokenService.class);
+			Iterator<TokenService> itr = service.iterator();
+			while (itr.hasNext()) {
+				TokenService tempService = itr.next();
+				if (tempService != null) {
+					tokenServiceClass = tempService.getClass().getName();
+					break;
+				}
+			}
+			if (tokenServiceClass == null || "".equals(tokenServiceClass.trim())) {
+				throw new RuntimeException("tokenServiceClass cannot be null or empty! You can also use SPI to initialize it.");
+			}
+		}
 	}
 
+	private void throwNullException(String property) {
+		throw new RuntimeException(property + " cannot be null or empty!");
+	}
+	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
@@ -94,16 +117,13 @@ public class SSOClientFilter implements Filter {
 				if (tokenService.isValid(request)) {
 					chain.doFilter(request, response);
 				} else {
-					if (authId != null) {
-						Map<String, String> dataMap = Maps.newHashMap();
-						dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
-						Response res = Verifier.post(verifyURL, dataMap);
-						if (Boolean.parseBoolean(res.body().string())) {
-							tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));
-							
-							chain.doFilter(request, response);
-						}
-					}
+					Map<String, String> dataMap = Maps.newHashMap();
+					dataMap.put(SSOKey.KEY.AUTH_ID.getKey(), authId);
+					Response res = Verifier.post(verifyURL, dataMap);
+					if (Boolean.parseBoolean(res.body().string())) {
+						tokenService.createToken(authId, request, response, Boolean.parseBoolean(rememberMe));
+						chain.doFilter(request, response);
+					}	
 				}
 			} else if (tokenService.isValid(request)) {
 				chain.doFilter(request, response);
@@ -112,42 +132,46 @@ public class SSOClientFilter implements Filter {
 					throw new RuntimeException("SSO URL cannot be null or empty.");
 				}
 				if (ssoURL.startsWith("http://") || ssoURL.startsWith("https://")) {
-					response.sendRedirect(ssoURL + "?" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL + "&" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId);
+					response.sendRedirect(ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
 				} else {
-					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL + "&" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId);
+					response.sendRedirect("http://" + ssoURL + "?" + SSOKey.KEY.SERVICE_ID.getKey() + "=" + serviceId + "&" + SSOKey.KEY.CALLBACK_URL.getKey() + "=" + encodedURL);
 				}
 			}
 		}
 	}
 
-	private String rewriteURL(String queryString) {
-		if (queryString != null && queryString.trim().length() > 0) {
-			String[] parameters = queryString.split("&");
-			List<String> paramList = Lists.newArrayList(parameters);
-			Iterator<String> itr = paramList.iterator();
-			while (itr.hasNext()) {
-				String param = itr.next();
-				if (need2Rmv(param)) {
-					itr.remove();
-				}
-			}
-			if (paramList.size() > 0) {
-				StringBuilder builder = new StringBuilder();
-				paramList.stream().forEach(p -> {
-					if (builder.length() == 0) {
-						builder.append(p);
-					} else {
-						builder.append("&" + p);
-					}
-				});
-				return builder.toString();
-			}
-		}
-		return null;
+//	private String rewriteURL(String queryString) {
+//		if (queryString != null && queryString.trim().length() > 0) {
+//			String[] parameters = queryString.split("&");
+//			List<String> paramList = Lists.newArrayList(parameters);
+//			Iterator<String> itr = paramList.iterator();
+//			while (itr.hasNext()) {
+//				String param = itr.next();
+//				if (need2Rmv(param)) {
+//					itr.remove();
+//				}
+//			}
+//			if (paramList.size() > 0) {
+//				StringBuilder builder = new StringBuilder();
+//				paramList.stream().forEach(p -> {
+//					if (builder.length() == 0) {
+//						builder.append(p);
+//					} else {
+//						builder.append("&" + p);
+//					}
+//				});
+//				return builder.toString();
+//			}
+//		}
+//		return null;
+//	}
+//
+//	private boolean need2Rmv(String str) {
+//		return rewriteFilter.stream().anyMatch(s -> str.startsWith(s));
+//	}
+
+	@Override
+	public void destroy() {
+
 	}
-	
-	private boolean need2Rmv(String str) {
-		return rewriteFilter.stream().anyMatch(s -> str.startsWith(s));
-	}
-	
 }

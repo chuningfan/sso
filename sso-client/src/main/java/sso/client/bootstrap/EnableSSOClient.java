@@ -14,6 +14,12 @@ import org.springframework.context.annotation.Import;
 @Import(SSOFilterRegistrar.class)
 public @interface EnableSSOClient {
 
-	String SSOCenter();
+	String SSOAddress();
+	
+	String tokenServiceClass();
+
+	String[] exclusions() default "";
+	
+	String serviceId();
 	
 }

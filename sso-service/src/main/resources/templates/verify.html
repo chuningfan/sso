@@ -9,21 +9,9 @@
 <link rel="stylesheet" href="/static/css/sso.css" />
 <script type="text/javascript">
 	$(document).ready(function() {
-		var authId = getCookie("SESSION")
-		var url = "/sso/page/login"
-		if (authId) {
-			url = "/validate.do?authId=" + authId;
-			var options = {
-					url: url,
-					type: "GET",
-					async: false
-				}
-			$.ajax(options);
-		} else {
-			var query = window.location.search;
-			window.location.href = window.location.protocol + "//" + window.location.host + "/sso/page/login" + query;
-		}
-		
+		var url = "/validate.do"
+		var query = window.location.search;
+		window.location.href = window.location.protocol + "//" + window.location.host + url + query;
 	});
 </script>
 </head>

@@ -1,11 +1,11 @@
 function login() {
-	var callback = window.location.search.replace("?CALLBACK_URL=", "");
 	var data = {
 	'loginName': $('#loginName').val(),
 	'password': md5($("#password").val()),
 	'validationCode': $('#validationCode').val(),
 	'rememberMe': $('#rememberMe').val(),
-	'callback': callback
+	'callback': getParam('callback'),
+	'service_id': getParam('service_id')
 	};
 	var options = {
 		url : "/sso/login",
@@ -17,6 +17,19 @@ function login() {
 		dataType : "json"
 	};
 	$.ajax(options);
+}
+
+function getParam(p_name) {
+	var query = window.location.search.replace('?', '');
+	var array = query.split('&');
+	for (var i = 0; i < array.length; i++) {
+		var str = array[i];
+		var map = str.split('=');
+		if (map[0] === p_name) {
+			return map[1];
+		}
+	}
+	return null;
 }
 
 function jump(url) {

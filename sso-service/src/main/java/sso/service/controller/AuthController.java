@@ -2,7 +2,6 @@ package sso.service.controller;
 
 import java.io.PrintWriter;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.assertj.core.util.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import sso.common.dto.SSOKey;
 import sso.common.dto.UserInfo;
@@ -52,13 +51,14 @@ public class AuthController {
 			if (isRememberMe) {
 				session.setMaxInactiveInterval(Constant.TIME.STAY_IN_ACCESSED.getTime());
 			}
+			@SuppressWarnings("unchecked")
 			Set<String> logoutSet = session.getAttribute(Constant.KEY.LOGOUT_URLS.getKey()) == null ?
 					null : (Set<String>)session.getAttribute(Constant.KEY.LOGOUT_URLS.getKey());
 			if(logoutSet == null) {
 				logoutSet = Sets.newHashSet();
 			}
 			logoutSet.add(loginProcessor.getLogoutUrl(serviceId));
-			String url = URLDecoder.decode(request.getParameter("callback"), "UTF-8") + "?" + SSOKey.KEY.AUTH_ID.getKey() + "=" + session.getId() + "&" + 
+			String url = URLDecoder.decode(request.getParameter(SSOKey.KEY.CALLBACK_URL.getKey()), "UTF-8") + "?" + SSOKey.KEY.AUTH_ID.getKey() + "=" + session.getId() + "&" + 
 					SSOKey.KEY.RBM.getKey() + "=" + (request.getParameter("rememberMe"));
 			Map<String, String> res = Maps.newHashMap();
 			res.put("url", url);

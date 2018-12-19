@@ -43,7 +43,7 @@ public interface SSOKey {
 	
 	enum SSO_PATH {
 		
-		CLIENT_VALIDATE("/validate.do"), CLIENT_VERIFY("/sso/verify");
+		CLIENT_VERIFY("/sso/verify");
 		
 		private String path;
 
@@ -59,6 +59,25 @@ public interface SSOKey {
 			this.path = path;
 		}
 		
+	}
+	
+	enum PARAMETER_KEY {
+		
+		LOGIN_NAME("loginName"), PASSWORD("password");
+		
+		private String key;
+
+		private PARAMETER_KEY(String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 	}
 	
 }

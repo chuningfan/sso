@@ -50,7 +50,7 @@ public class SSOClientFilter implements Filter {
 		SSOAddress = config.getInitParameter("SSOAddress");
 		tokenServiceClass = config.getInitParameter("tokenServiceClass");
 		check();
-		ssoURL = SSOAddress + "/sso/page/verify";
+		ssoURL = SSOAddress + SSOKey.SSO_PATH.VERIFY_PAGE.getPath();
 		verifyURL = SSOAddress + SSOKey.SSO_PATH.CLIENT_VERIFY.getPath();
 		exclusions = config.getInitParameter("exclusions");
 		if (exclusionList == null && exclusions != null && exclusions.trim().length() > 0) {

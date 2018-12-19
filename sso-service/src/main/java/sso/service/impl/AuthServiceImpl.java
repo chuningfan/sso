@@ -17,9 +17,13 @@ import sso.core.component.rpc.CustomizeClientProvider;
 import sso.core.component.rpc.RequestClient;
 import sso.core.component.web.filter.RequestHandler;
 import sso.core.service.AuthService;
+import sso.service.helper.DataHelper;
 
 public class AuthServiceImpl implements AuthService<String, UserInfo> {
 
+	@Autowired
+	private DataHelper dataHelper;
+	
 	@Autowired
 	private RequestClient requestClient;
 	
@@ -52,8 +56,12 @@ public class AuthServiceImpl implements AuthService<String, UserInfo> {
 
 	@Override
 	public String getAuthUrl(String serviceId) {
-		// TODO Auto-generated method stub
-		return "http://127.0.0.1:8080/user/login";
+		String data = dataHelper.readProperty(serviceId);
+		if (data != null && !"".equals(data.trim())) {
+			return data.split(";")[0];
+		} else {
+			throw new RuntimeException("Cannot find data by service ID " + serviceId);
+		}
 	}
 	
 }

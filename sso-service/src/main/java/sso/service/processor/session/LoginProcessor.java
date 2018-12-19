@@ -11,6 +11,7 @@ import sso.core.internal.dto.StateCode;
 import sso.core.internal.handler.AbstractAuthHandler;
 import sso.core.internal.handler.ChainHandler;
 import sso.core.internal.processor.AbstractProcessor;
+import sso.service.helper.DataHelper;
 import sso.service.impl.AuthServiceImpl;
 
 public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Result<UserInfo>> {
@@ -20,6 +21,9 @@ public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Resu
 //	
 //	@Autowired
 //	private RedisClient redisClient;
+	
+	@Autowired
+	private DataHelper dataHelper;
 	
 	@Autowired
 	private AuthServiceImpl authServiceImpl;
@@ -64,7 +68,12 @@ public class LoginProcessor extends AbstractProcessor<UserInfo, SSORequest, Resu
 	 */
 	@Override
 	public String getLogoutUrl(String serviceId) {
-		return "http://127.0.0.1:8080/user/logout";
+		String data = dataHelper.readProperty(serviceId);
+		if (data != null && !"".equals(data.trim())) {
+			return data.split(";")[1];
+		} else {
+			throw new RuntimeException("Cannot find data by service ID " + serviceId);
+		}
 	}
 
 	
